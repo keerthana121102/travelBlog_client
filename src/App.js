@@ -1,23 +1,44 @@
-import logo from './logo.svg';
-import './App.css';
+import Header from "./header/Header";
+import { Route, Routes } from "react-router-dom";
+import Home from "./home/Home";
+import Diaries from "./diaries/Diaries";
+import Auth from "./auth/Auth";
+import { useDispatch, useSelector } from "react-redux";
+import Add from "./diaries/Add";
+import Profile from "./profile/Profile";
+import DiaryUpdate from "./diaries/DiaryUpdate";
+import { useEffect } from "react";
+import { authActions } from "./store";
 
 function App() {
+  const dispatch = useDispatch();
+  const isLoggedIn = useSelector((state) => state.isLoggedIn);
+  console.log(isLoggedIn);
+  useEffect(() => {
+    if (localStorage.getItem("userId")) {
+      dispatch(authActions.login());
+    }
+  }, [localStorage]);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+    <div >
+      <header>
+        <Header />
       </header>
+
+      <section>
+        <Routes>
+          <Route path="/" element={<Home /> } />
+          <Route path="/diaries" element={<Diaries /> } />
+          <Route path="/auth" element={<Auth /> } />
+          {isLoggedIn && (
+            <>
+              <Route path="/add" element={<Add />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/post/:id" element={<DiaryUpdate />} />{" "}
+            </>
+          )}
+        </Routes>
+      </section>
     </div>
   );
 }
